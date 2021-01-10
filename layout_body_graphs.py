@@ -21,7 +21,7 @@ def body():
                                 html.H4('What is this app?', style={"text-align":"center"}),
                                 html.P(
                                     """
-                                    This app computes the replication strategy of vanilla European options on a set of given inputs, in the Black-Scholes-Merton (BSM) framework.
+                                    This app computes the replication strategy of exchange options (also known as Margrabe options) on a set of given inputs, in the Black-Scholes-Merton (BSM) framework.
                                     """
                                       ),
                                 html.P(
@@ -61,26 +61,24 @@ def body():
                             html.H4("Type of options", style={"text-align":"center"}),
                             html.P([
                               """
-                              The considered options are vanilla European options paying \(\psi(S_T)\) at maturity \(T\) where \(\psi(X)\) is the payoff function.
-                              For a call, the payoff function is \(\psi(S_T)=max(0,S_T-K)\) and for a put \(\psi(S_T)=max(0,K-S_T)\) where K is the strike price.
+                              The considered options are exchange options paying \(\psi(S^1_T,S^2_T)=max(0,S^1_T-S^2_T)\) (for exchange calls).
                               """]),
                             html.Hr(),
                             html.H4("Option price", style={"text-align":"center"}),
                             html.P([
                               """
-                              The call and put BSM pricing formula are well-known:
-                              $$C_t = S_t\Phi(d_1)-Ke^{-r(T-t)}\Phi(d_2)$$$$P_t = S_t\Phi(d_1)-Ke^{-r(T-t)}\Phi(d_2)$$ Where \(\Phi\) is the standard normal cumulative distribution function, 
-                              \(d_1\) and \(d_2\) constants \(d_1=\\frac{1}{\sigma\sqrt{T-t}}\left[ln(\\frac{S_t}{K})+(r+\\frac{\sigma^2}{2})(T-t)\\right]\), \(d_2=d_1-\sigma\\sqrt{T-t}\) where
-                              \(r\) is the risk-free rate. 
-                              These pricing formula originate from the BSM partial differential equation, which is valid for any type of European option:
+                              The exchange option BSM price was derived by Margrabe in his 1978 paper:
+                              $$V_t = S^1_t\Phi(d_1)-S^2_t\Phi(d_2)$$ Where \(\Phi(.)\) is the standard normal cumulative distribution function, 
+                              \(d_1\) and \(d_2\) constants $$d_1=\\frac{1}{\hat{\sigma}\sqrt{T-t}}\left[ln(\\frac{S^1_t}{S^2_t})+\\frac{\hat{\sigma^2}}{2}(T-t)\\right]$$$$d_2=d_1-\hat{\sigma}\\sqrt{T-t}$$$$\hat{\sigma^2}=\sigma^2_1+\sigma_2^2-2\\rho\sigma_1\sigma_2$$
+                              This pricing formula originate from the BSM partial differential equation, which is valid for any type of European option:
                               $$\\frac{\partial V_t}{\partial t}+\\frac{\sigma^{2}S^{2}_t}{2}\\frac{\partial^{2}V_t}{\partial S^{2}}+rS_t\\frac{\partial V_t}{\partial S} = rV_t$$
                               Where \(V_t=f(t,S_t)\) the price of the option at time t. To get the pricing formulas, solve the PDE with terminal condition the payoff \(\psi(X)\) of the desired European-type option.
                               """]),
                               html.Hr(),
                               html.H4("Academical references", style={"text-align":"center"}),
                               "The main academical references used were:",
-                              html.Ul([html.Li("Vrins, F.  (2020). Course notes for LLSM2226:  Credit & Interest Rates Risk. (Financial Engineering Program, Louvain School of Management, Université catholique de Louvain)"), 
-                                       html.Li("Shreve, S. E. (2004). Stochastic calculus for finance II continuous-time models (2nd ed.). Springer Finance."),]),
+                              html.Ul([html.Li("Vrins, F.  (2017-2018). Course notes for Derivatives Pricing. (Financial Engineering Program, Louvain School of Management, Université catholique de Louvain)"), 
+                                       html.Li("Margrabe, W. (1978). The Value of an Option to Exchange One Asset for Another. Journal of Finance, 33, 177-186."),]),
                             ])]),
                         # Where \(S_t\) is the price of the underlying asset at time t, \(\sigma\) the standard deviation of the underlying asset, \(r\) the risk-free rate. 
                         #
@@ -143,17 +141,17 @@ def body():
                               formula, the option price must agree with \(V_0\). Otherwise, for \(k>0\), if the price of the option is \(V_0+k\), you can sell the option at \(V_0+k\), launch the strategy (which only requires \(V_0\)), and get a 
                               profit of \(k\) today. At maturity, the strategy will deliver exactly the amount that you have to pay to the option’s buyer. If \(k<0\), do the opposite (buy the option, sell the strategy).
                               """]),
-                            html.P([
-                              """
-                              The delta-hedging strategy is visually summarized in this table by Prof. Vrins (LSM, 2020). 
-                              """]),
-                            dbc.Button("Show me the table", id="bsm-table-target", color="primary", className="mr-1",),
-                            dbc.Popover(children=[dbc.PopoverHeader("delta-hedging strategy table"),
-                                  dbc.PopoverBody([html.Img(src="data:image/png;base64,{}".format(base64.b64encode(open("bsm-math.png",'rb').read()).decode())    , style={"width": "250%"})]),
-                                 ],
-                             id="bsm-table",
-                             is_open=False,
-                           target="bsm-table-target",),
+                           #  html.P([
+                           #    """
+                           #    The delta-hedging strategy is visually summarized in this table by Prof. Vrins (LSM, 2020). 
+                           #    """]),
+                           #  dbc.Button("Show me the table", id="bsm-table-target", color="primary", className="mr-1",),
+                           #  dbc.Popover(children=[dbc.PopoverHeader("delta-hedging strategy table"),
+                           #        dbc.PopoverBody([html.Img(src="data:image/png;base64,{}".format(base64.b64encode(open("bsm-math.png",'rb').read()).decode())    , style={"width": "250%"})]),
+                           #       ],
+                           #   id="bsm-table",
+                           #   is_open=False,
+                           # target="bsm-table-target",),
                             ])]),
                       #
                       #
@@ -165,53 +163,63 @@ def body():
                                       #
                                       html.P(
                                             """
-                                            Place your mouse over any input to get its definition. Refer to "New Brownian motion" if you wish to have a random seed.
+                                            Place your mouse over any input to get its definition. 
                                             """
                                              ),
-                                      dcc.Dropdown(id='CallOrPut',
-                                                   options=[{'label':'European Call option', 'value':"Call"}, 
-                                                            {'label':'European Put option', 'value':"Put"}
-                                                            ],
-                                                   value='Call'),
                             #
-                            html.Br(),
-                            #
-                            html.Div(children=[html.Label('Spot price', title=list_input["Spot price"], style={'font-weight': 'bold', "text-align":"left", "width":"25%",'display': 'inline-block'} ),
-                                               dcc.Input(id="S", value=100, type='number', style={"width":"16%", 'display': 'inline-block'}),
-                                               html.P("",id="message_S", style={"font-size":12, "color":"red", "padding":5, 'width': '55%', "text-align":"left", 'display': 'inline-block'})
+                            html.Div(children=[html.Label('Spot price 1', title=list_input["Spot price"], style={'font-weight': 'bold', "text-align":"left", "width":"25%",'display': 'inline-block'} ),
+                                               dcc.Input(id="S1", value=100, type='number', style={"width":"16%", 'display': 'inline-block'}),
+                                               html.P("",id="message_S1", style={"font-size":12, "color":"red", "padding":5, 'width': '55%', "text-align":"left", 'display': 'inline-block'})
                                               ]
                                     ),
 
-                            html.Div(children=[html.Label("Strike", title=list_input["Strike"], style={'font-weight': 'bold',"text-align":"left", "width":"25%",'display': 'inline-block'} ),
-                                               dcc.Input(id="K", value=100, type='number', style={"width":"16%", 'display': 'inline-block'}),
-                                               html.P("",id="message_K", style={"font-size":12, "color":"red", "padding":5, 'width': '55%', "text-align":"left", 'display': 'inline-block'})
+                            html.Div(children=[html.Label("Spot price 2", title=list_input["Spot price"], style={'font-weight': 'bold',"text-align":"left", "width":"25%",'display': 'inline-block'} ),
+                                               dcc.Input(id="S2", value=100, type='number', style={"width":"16%", 'display': 'inline-block'}),
+                                               html.P("",id="message_S2", style={"font-size":12, "color":"red", "padding":5, 'width': '55%', "text-align":"left", 'display': 'inline-block'})
                                               ],
                                     ),               
                           #
-                          html.Div(children=[html.Label("Drift", title=list_input["Drift"], style={'font-weight': 'bold', 'display': 'inline-block'}),
-                                             html.Label(id="drift", style={'display': 'inline-block'}),
+                          html.Div([html.Label('Stocks correlation', title=list_input["Correlation"], style={'font-weight': 'bold', "display":"inline-block"}),
+                                    html.Label(id="correlation", style={"display":"inline-block"}),]),  
+                          #
+                          dcc.Slider(id='corr', min=-1, max=1, step=0.01, value=0.30, marks={-1:"-1", -0.5:"-0.5", 0:"0", 0.5:"0.5", 1:"1"}),
+                          #
+                          html.Div(children=[html.Label("Drift stock 1", title=list_input["Drift"], style={'font-weight': 'bold', 'display': 'inline-block'}),
+                                             html.Label(id="drift1", style={'display': 'inline-block'}),
                                              ]
                                   ),
                           #
-                          dcc.Slider(id='mu', min=-0.40, max=0.40, value=0.10, step=0.01, marks={-0.40: '-40%', 0.40: '40%'}),
+                          dcc.Slider(id='mu1', min=-0.40, max=0.40, value=0.10, step=0.01, marks={-0.40: '-40%', -0.2:"-20%", 0:"0%", 0.2:"20%", 0.40: '40%'}),
                           #
-                          html.Div([html.Label('Volatility', title=list_input["Volatility"], style={'font-weight': 'bold', "display":"inline-block"}),
-                                    html.Label(id="sigma", style={"display":"inline-block"}),]),  
+                          html.Div([html.Label('Volatility stock 1', title=list_input["Volatility"], style={'font-weight': 'bold', "display":"inline-block"}),
+                                    html.Label(id="sigma1", style={"display":"inline-block"}),]),  
                           #
-                          dcc.Slider(id='vol', min=0, max=1, step=0.01, value=0.20, marks={0:"0%", 1:"100%"}),
-                            #
-                            html.Div([html.Label('Risk-free rate', title=list_input["Risk-free rate"], style={'font-weight': 'bold', "display":"inline-block"}),
+                          dcc.Slider(id='vol1', min=0, max=1, step=0.01, value=0.20, marks={0:"0%", 0.25:"25%", 0.5:"50%", 0.75:"75%", 1:"100%"}),
+                          #
+                          html.Div(children=[html.Label("Drift stock 2", title=list_input["Drift"], style={'font-weight': 'bold', 'display': 'inline-block'}),
+                                             html.Label(id="drift2", style={'display': 'inline-block'}),
+                                             ]
+                                  ),
+                          #
+                          dcc.Slider(id='mu2', min=-0.40, max=0.40, value=0.10, step=0.01, marks={-0.40: '-40%', -0.2:"-20%", 0:"0%", 0.2:"20%", 0.40: '40%'}),
+                          #
+                          html.Div([html.Label('Volatility stock 2', title=list_input["Volatility"], style={'font-weight': 'bold', "display":"inline-block"}),
+                                    html.Label(id="sigma2", style={"display":"inline-block"}),]),  
+                          #
+                          dcc.Slider(id='vol2', min=0, max=1, step=0.01, value=0.20,marks={0:"0%", 0.25:"25%", 0.5:"50%", 0.75:"75%", 1:"100%"}),
+                          #
+                          html.Div([html.Label('Risk-free rate', title=list_input["Risk-free rate"], style={'font-weight': 'bold', "display":"inline-block"}),
                                       html.Label(id="riskfree", style={"display":"inline-block"}),]),  
-                          dcc.Slider(id='Rf', min=0, max=0.1, step=0.01, value=0.03, marks={0:"0%", 0.1:"10%"}),
+                          dcc.Slider(id='Rf', min=0, max=0.1, step=0.01, value=0.03, marks={0:"0%", 0.025:"2.5%", 0.05:"5%", 0.075:"7.5%", 0.1:"10%"}),
                           #
                           html.Div([html.Label('Maturity', title=list_input["Maturity"], style={'font-weight':'bold', "display":"inline-block"}),
                                     html.Label(id="matu", style={"display":"inline-block"}),]),                    
                           dcc.Slider(id='T', min=0.25, max=5, # marks={i: '{}'.format(i) for i in range(6)},
-                                     marks={0.25:"3 months", 5:"5 years"}, step=0.25, value=3),
+                                     marks={0.25:"3 months", 1.25:"1.25 years", 2.5:"2.5 years", 3.75:"3.75 years", 5:"5 years"}, step=0.25, value=2.5),
                           #
                           html.Br(),
                             html.Div([
-                                  html.Label('Discretization step', title=list_input["Discretization step"], style={'font-weight': 'bold', "text-align":"left",'width': '50%', 'display': 'inline-block'}),
+                                  html.Label('Discretization step (dt)', title=list_input["Discretization step"], style={'font-weight': 'bold', "text-align":"left",'width': '50%', 'display': 'inline-block'}),
                                   dcc.Input(id="dt", value=0.01, type='number', style={"width":"16%", 'display': 'inline-block'}),
                                   html.P("",id="message_dt", style={"font-size":12, "color":"red", 'width': '34%', "text-align":"left", 'display': 'inline-block'})
                                 ]),
@@ -235,24 +243,17 @@ def body():
                                          value='NTC',
                                          labelStyle={'padding':5, 'font-weight': 'bold', 'display': 'inline-block'}
                                         ),  
-                          # dcc.Checklist(
-                          #   id = "FixedOrPropor",
-                         #      options=[
-                         #        {'label': 'Fixed TC', 'value': 'FTC'},
-                         #        {'label': 'Proportional TC', 'value': 'PTC'}],
-                         #      value=[], #ADD AN S WHEN GOING ONLINE
-                         #      labelStyle={'padding':5, 'font-weight': 'bold', "text-align":"left", 'display': 'inline-block'}),
                           #
                           html.Label(children=[dcc.Checklist(id = "seed",
                                                    options=[{'label': 'New Brownian motion', 'value': "seed"}],
-                                                   value=[], #ADD AN S WHEN GOING ONLINE
+                                                   value=[], 
                                                    labelStyle={'font-weight': 'bold', "text-align":"left", 'display': 'inline-block'}
                                                    )], 
                                      title=list_input["Seed"]),
                           #
                           html.Br(),
                           html.A('Download Data', id='download-link', download="rawdata.csv", href="", target="_blank"),
-                          html.P("""Note: requires excel decimal separator to be a dot.""", style={"font-size":12}),
+                          # html.P("""Note: requires excel decimal separator to be a dot.""", style={"font-size":12}),
 
                           ])),
     ],),], style={'float': 'left', 'width': '25%', 'margin':"30px"}),
@@ -265,20 +266,23 @@ def graphs():
           children=[
             html.Br(),
             html.Div([
-                  html.Div(children=[dcc.Markdown(children=''' #### Portfolio composition'''),
-                             dcc.Graph(id='port_details'),],
-                       style={"float":"right", "width":"45%", "display":"inline-block"}),
+                  # html.Div(children=[dcc.Markdown(children=''' #### Portfolio composition'''),
+                  #            dcc.Graph(id='port_details'),],
+                  #      style={"float":"right", "width":"45%", "display":"inline-block"}),
                   html.Div(children=[dcc.Markdown(children=''' #### Replication strategy '''),
                             dcc.Graph(id='replication'),],
-                       style={"float":"right", "width":"55%", "display":"inline-block"}),
+                       style={"float":"right", "width":"100%", "display":"inline-block"}),
                     ]),
-                html.Div([
-                  html.Div(children=[dcc.Markdown(children=''' #### Option greeks '''),
-                             dcc.Graph(id='sde_deriv'),],
-                       style={"float":"right", "width":"45%", "display":"inline-block"}),
+            html.Div([
+                  # html.Div(children=[dcc.Markdown(children=''' #### Option greeks '''),
+                  #            dcc.Graph(id='sde_deriv'),],
+                  #      style={"float":"right", "width":"45%", "display":"inline-block"}),
                   html.Div(children=[dcc.Markdown(children=''' #### Held shares'''),
                              dcc.Graph(id='held_shares'),],
+                       style={"float":"right", "width":"45%", "display":"inline-block"}),
+                  html.Div(children=[dcc.Markdown(children=''' #### Portfolio composition'''),
+                             dcc.Graph(id='port_details'),],
                        style={"float":"right", "width":"55%", "display":"inline-block"}),
-                        ]),
+                    ]),
                    ], 
           style={'float': 'right', 'width': '70%'})

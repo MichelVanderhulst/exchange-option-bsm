@@ -27,7 +27,7 @@ def header():
 	                   #  	  ), style={"display":"inline-block"}),
                     #
                     #
-                    html.Div(children=[html.H3("European option replication strategy app"),
+                    html.Div(children=[html.H3("Exchange option replication strategy app"),
                     				   html.H4("Black-Scholes-Merton model")
                     				  ],
                        		 style={"display":"inline-block", "font-family":'sans-serif'}),

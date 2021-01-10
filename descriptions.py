@@ -38,6 +38,7 @@ list_input = {"-": "-",
                                    "sold. Typically a few basis points, i.e. less than a tenth of a percentage. Given"
                                    " the Black-Scholes model assumptions, where transactions costs are null, "
                                    "considering them will decrease the quality of the replication strategy. If left empty, it is assumed null.",
+              "Correlation": "Correlation between both stocks, i.e. how much they move together.",
               "Seed": "The simulations are based on a random number generation. Currently, the generation is fixed, ie the Brownian motion behind"
                      " the stock random dynamics is fixed, and permits sensitivity analysis. Checking this will generate a new Brownian motion every time you change an input."
               }
