@@ -182,40 +182,40 @@ def body():
                           html.Div([html.Label('Stocks correlation', title=list_input["Correlation"], style={'font-weight': 'bold', "display":"inline-block"}),
                                     html.Label(id="correlation", style={"display":"inline-block"}),]),  
                           #
-                          dcc.Slider(id='corr', min=-1, max=1, step=0.01, value=0.30, marks={-1:"-1", -0.5:"-0.5", 0:"0", 0.5:"0.5", 1:"1"}),
+                          dcc.Slider(id='corr', min=-1, max=1, step=0.01, value=0.30, marks={-1:"-1", 0:"0", 1:"1"}),
                           #
                           html.Div(children=[html.Label("Drift stock 1", title=list_input["Drift"], style={'font-weight': 'bold', 'display': 'inline-block'}),
                                              html.Label(id="drift1", style={'display': 'inline-block'}),
                                              ]
                                   ),
                           #
-                          dcc.Slider(id='mu1', min=-0.40, max=0.40, value=0.10, step=0.01, marks={-0.40: '-40%', -0.2:"-20%", 0:"0%", 0.2:"20%", 0.40: '40%'}),
+                          dcc.Slider(id='mu1', min=-0.40, max=0.40, value=0.10, step=0.01, marks={-0.40: '-40%', 0:"0%", 0.40: '40%'}),
                           #
                           html.Div([html.Label('Volatility stock 1', title=list_input["Volatility"], style={'font-weight': 'bold', "display":"inline-block"}),
                                     html.Label(id="sigma1", style={"display":"inline-block"}),]),  
                           #
-                          dcc.Slider(id='vol1', min=0, max=1, step=0.01, value=0.25, marks={0:"0%", 0.25:"25%", 0.5:"50%", 0.75:"75%", 1:"100%"}),
+                          dcc.Slider(id='vol1', min=0, max=1, step=0.01, value=0.25, marks={0:"0%", 0.5:"50%", 1:"100%"}),
                           #
                           html.Div(children=[html.Label("Drift stock 2", title=list_input["Drift"], style={'font-weight': 'bold', 'display': 'inline-block'}),
                                              html.Label(id="drift2", style={'display': 'inline-block'}),
                                              ]
                                   ),
                           #
-                          dcc.Slider(id='mu2', min=-0.40, max=0.40, value=0.10, step=0.01, marks={-0.40: '-40%', -0.2:"-20%", 0:"0%", 0.2:"20%", 0.40: '40%'}),
+                          dcc.Slider(id='mu2', min=-0.40, max=0.40, value=-0.10, step=0.01, marks={-0.40: '-40%', 0:"0%", 0.40: '40%'}),
                           #
                           html.Div([html.Label('Volatility stock 2', title=list_input["Volatility"], style={'font-weight': 'bold', "display":"inline-block"}),
                                     html.Label(id="sigma2", style={"display":"inline-block"}),]),  
                           #
-                          dcc.Slider(id='vol2', min=0, max=1, step=0.01, value=0.05,marks={0:"0%", 0.25:"25%", 0.5:"50%", 0.75:"75%", 1:"100%"}),
+                          dcc.Slider(id='vol2', min=0, max=1, step=0.01, value=0.10,marks={0:"0%", 0.5:"50%",  1:"100%"}),
                           #
                           html.Div([html.Label('Risk-free rate', title=list_input["Risk-free rate"], style={'font-weight': 'bold', "display":"inline-block"}),
                                       html.Label(id="riskfree", style={"display":"inline-block"}),]),  
-                          dcc.Slider(id='Rf', min=0, max=0.1, step=0.01, value=0.03, marks={0:"0%", 0.025:"2.5%", 0.05:"5%", 0.075:"7.5%", 0.1:"10%"}),
+                          dcc.Slider(id='Rf', min=0, max=0.1, step=0.01, value=0.03, marks={0:"0%",  0.05:"5%", 0.1:"10%"}),
                           #
                           html.Div([html.Label('Maturity', title=list_input["Maturity"], style={'font-weight':'bold', "display":"inline-block"}),
                                     html.Label(id="matu", style={"display":"inline-block"}),]),                    
                           dcc.Slider(id='T', min=0.25, max=5, # marks={i: '{}'.format(i) for i in range(6)},
-                                     marks={0.25:"3 months", 1.25:"1.25 years", 2.5:"2.5 years", 3.75:"3.75 years", 5:"5 years"}, step=0.25, value=3.5),
+                                     marks={0.25:"3 months", 2.5:"2.5 years", 5:"5 years"}, step=0.25, value=3.5),
                           #
                           html.Br(),
                             html.Div([
