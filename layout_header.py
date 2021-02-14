@@ -59,7 +59,7 @@ def header():
                                               style={'margin':'5px', }
                                               ),
 
-                                       html.Div(children=[html.H4("European option replication strategy app"),
+                                       html.Div(children=[html.H4("Exchange option replication strategy app"),
                                                           html.H5("Black-Scholes-Merton model")
                                                           ],
                                                  style={"display":"inline-block", "font-family":'sans-serif','transform':'translateY(+25%)', "margin":"1px"}),
@@ -67,14 +67,14 @@ def header():
                                        html.Div(children=[dbc.Button("About", id="popover-target", outline=True, style={"color":"white", 'border': 'solid 1px white'}),
                                                           dbc.Popover(children=[dbc.PopoverHeader("About"),
                                                                                  dbc.PopoverBody(["Michel Vanderhulst",                             
-                                                                                        f"michelvanderhulst@student.uclouvain.be", 
+                                                                                        f"\nmichelvanderhulst@student.uclouvain.be", 
                                                                                         html.Hr(), 
                                                                                         "This app was built for my Master's Thesis, under the supervision of Prof. Frédéric Vrins (frederic.vrins@uclouvain.be)."]),],
                                                                        id="popover",
                                                                        is_open=False,
                                                                        target="popover-target"),
                                                           ],
-                                                 style={"display":"inline-block","font-family":"sans-serif","marginLeft":"47%"}),
+                                                 style={"display":"inline-block","font-family":"sans-serif","marginLeft":"46%"}),
 
                                      html.A(id="nova-logo",
                                              children=[html.Img(style={"height":"11%","width":"11%"}, src="data:image/png;base64,{}".format(base64.b64encode(open("1280px-NovaSBE_Logo.svg.png","rb").read()).decode()))],
