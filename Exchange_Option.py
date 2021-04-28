@@ -106,7 +106,7 @@ def RepStrat_Exchange_Option_BSM(S1, S2, Rf, T, mu1, mu2, vol1, vol2, corr, dt, 
     OptionIntrinsicValue[0] = max(0, StockPrice1[0] - StockPrice2[0])
     OptionPrice[0] = p_eo(S1, S2, T, 0, vol)
     W1[0], W2[0], Z[0] = 0, 0, 0 #brownian motions are grounded to 0
-    dd1 = d1(S1, S2,T,0,vol)     #d1 is function name, cant have variable called d1
+    dd1 = d1(S1, S2,T,0,vol)
     Delta1[0] = norm.cdf(dd1)
     Delta2[0] = - norm.cdf(d2(dd1,T,0,vol))
     EquityAccount1[0] = Delta1[0]*StockPrice1[0]
