@@ -35,6 +35,13 @@ def body():
                                          html.Li("Will deliver exactly the payoff of the option at maturity")
                                         ]),
                                 html.Hr(),
+                            	html.H4("Type of options", style={"text-align":"center"}),
+                            	html.P([
+                              		"""
+                              		The considered options are exchange options, which give at maturity the right to exchange one risky asset for another. The option payoff is given by
+                              		$$\psi(T)=max(0,S_1(T)-S_2(T))$$
+                              		"""]),
+                                html.Hr(),
                                 html.P(
                                     """
                                     Read more about options : 
@@ -58,12 +65,6 @@ def body():
                               """Under BSM, the two underlying asset's dynamics are modeled with a geometric Brownian motion: 
                               $$dS_1(t) = \mu_1 S_1(t)dt+\sigma_1 S_1(t)dW_1(t)$$ $$dS_2(t) = \mu_2 S_2(t)dt+\sigma_2 S_2(t)dW_2(t) $$Where \(\mu_i\) is the drift, \(\sigma_i\) the volatility, \(dW_i(t)\) the increment of a Brownian motion and \(dW_1(t)dW_2(t)=\\rho dt\)"""]),
                             html.Hr(),
-                            html.H4("Type of options", style={"text-align":"center"}),
-                            html.P([
-                              """
-                              The considered options are exchange options paying \(\psi(S_1(t),S_2(t))=max(0,S_1(t)-S_2(t))\).
-                              """]),
-                            html.Hr(),
                             html.H4("Option price", style={"text-align":"center"}),
                             html.P([
                               """
@@ -84,7 +85,7 @@ def body():
                         #
                         dcc.Tab(
                           label="Appro-ach",
-                          value="Methodology",
+                          value="Appro-ach",
                           children=[html.Div(children=[
                             html.Br(),
                             html.H4("Methodology followed", style={"text-align":"center"}),
