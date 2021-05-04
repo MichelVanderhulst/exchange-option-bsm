@@ -1,12 +1,14 @@
+# Dash app libraries
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
 import dash_bootstrap_components as dbc
-from descriptions import list_input
 import base64
 
+# Rep strat input descriptions
+from inputDescriptions import list_input
 
-
+# Creating the app body
 def body():
   return html.Div(children=[
             html.Div(id='left-column', children=[
@@ -81,7 +83,7 @@ def body():
                               html.Ul([html.Li("Vrins, F.  (2017-2018). Course notes for Derivatives Pricing. (Financial Engineering Program, Louvain School of Management, Université catholique de Louvain)"), 
                                        html.Li("Margrabe, W. (1978). The Value of an Option to Exchange One Asset for Another. Journal of Finance, 33, 177-186."),]),
                             ])]),
-                        # Where \(S_t\) is the price of the underlying asset at time t, \(\sigma\) the standard deviation of the underlying asset, \(r\) the risk-free rate. 
+
                         #
                         dcc.Tab(
                           label="Appro-ach",
@@ -248,7 +250,7 @@ def body():
   ])
 
 
-
+# Creating the app graphs
 def graphs():
   return html.Div(id='right-column', 
           children=[

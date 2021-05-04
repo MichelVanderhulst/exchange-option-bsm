@@ -1,25 +1,30 @@
+# Dash app libraries
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output, State
 import dash_bootstrap_components as dbc
 import plotly.graph_objs as go
-from Exchange_Option import *
 
-from layout_header import header
-from layout_body_graphs import body, graphs
+# Importing app header, body and graphs from the other .py scripts
+from appHeader import header
+from appBody import body, graphs
 
+# Rep strat math
+from Exchange_Option_BSM_GBM import *
 
+# Excel export
 import pandas as pd
 import urllib.parse
 
-app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP], 
-	                      external_scripts=['https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML', "./assets/mathjax.js"],
-	                      meta_tags=[{"content": "width=device-width"}]
+# Creating dash object 
+app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP], #modern-looking buttons, sliders, etc
+	                      external_scripts=['https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML', "./assets/mathjax.js"],#LaTeX in app
+	                      meta_tags=[{"content": "width=device-width"}] #app width adapts itself to user device
 	                      )
 server = app.server
 
-
+# Building the app from imported header, body and graphs
 app.layout = html.Div(
                 id='main_page',
                 children=[
@@ -30,7 +35,7 @@ app.layout = html.Div(
                          ],
                      )
 
-
+# App interactivity: calling the rep strat everytime the user changes an input
 @app.callback(
     Output('memory-output', 'data'),
     [Input("S1","value"),
@@ -48,10 +53,10 @@ app.layout = html.Div(
      Input("FixedOrPropor", "value"),
      Input("seed", "value")])
 def get_rep_strat_data(S1, S2, Rf,T,mu1,vol1,mu2, vol2, corr, dt,dt_p, TransactionCosts, FixedOrPropor, seed):
-    StockPrice1, StockPrice2, dt, a, OptionIntrinsicValue, OptionPrice, EquityAccount, EquityAccount1, EquityAccount2,CashAccount, Portfolio, t, Delta1, Delta2, cash_bfr, cash_aft, equi1_bfr, equi1_aft, equi2_bfr, equi2_aft = RepStrat_Exchange_Option_BSM(S1, S2, Rf, T, mu1, mu2, vol1, vol2, corr, dt, dt_p, TransactionCosts, FixedOrPropor, seed)
+    StockPrice1, StockPrice2, dt, a, OptionIntrinsicValue, OptionPrice, EquityAccount, EquityAccount1, EquityAccount2,CashAccount, Portfolio, t, Delta1, Delta2, cash_bfr, cash_aft, equi1_bfr, equi1_aft, equi2_bfr, equi2_aft = RepStrat_Exchange_Option_BSM_GBM(S1, S2, Rf, T, mu1, mu2, vol1, vol2, corr, dt, dt_p, TransactionCosts, FixedOrPropor, seed)
     return StockPrice1, StockPrice2, dt, list(a), OptionIntrinsicValue, OptionPrice, EquityAccount, EquityAccount1, EquityAccount2,CashAccount, Portfolio, t, Delta1, Delta2, cash_bfr, cash_aft, equi1_bfr, equi1_aft, equi2_bfr, equi2_aft
 
-
+# Plot of stock simulation, intrinsic value, option price and rep portfolio
 @app.callback(
     Output('replication', 'figure'),
     [Input('memory-output', 'data'),])
@@ -116,7 +121,7 @@ def graph_rep_strat(data):
     )
 }
 
-
+# Plot of portfolio cash account & equity account
 @app.callback(
     Output('port_details', 'figure'),
     [Input('memory-output', 'data'),])
@@ -166,6 +171,7 @@ def graph_portf_details(data):
     )
 }
 
+# Plot of number of shares to hold
 @app.callback(
     Output('held_shares', 'figure'),
     [Input('memory-output', 'data'),])
@@ -202,53 +208,8 @@ def graph_held_shares(data):
     )
 }
 
-# @app.callback(
-#     Output('sde_deriv', 'figure'),
-#     [Input('memory-output', 'data'),])
-# def graph_portf_details(data):
-#     dt, K, discre_matu, StockPrice, OptionIntrinsicValue, OptionPrice, EquityAccount, CashAccount, Portfolio, V_t, f_t, f_x, f_xx, cash_bfr, cash_aft, equi_bfr, equi_aft, t = data
-#     return{
-#     'data': [
-#         go.Scatter(
-#             x=discre_matu,
-#             y=f_x,
-#             mode='lines',
-#             line={'dash': 'solid', 'color': 'light blue'},
-#             opacity=0.7,
-#             name="Delta",
-#             ),
-#         go.Scatter(
-#             x=discre_matu,
-#             y=f_t,
-#             mode='lines',
-#             opacity=0.7,
-#             name="Theta"),
-#         go.Scatter(
-#             x=discre_matu,
-#             y=f_xx,
-#             mode="lines",
-#             opacity=0.7,
-#             name="Gamma",
-#             yaxis="y2"),
-#     ],
-#     'layout': go.Layout(
-#         #height=400,
-#         margin={"t":15},
-#         xaxis={'title': f"Discretized time to maturity"},
-#         yaxis={'title': "Delta & Theta"},
-#         yaxis2={'title':'Gamma',
-#                 'overlaying':'y',
-#                 'side':'right'},
-#         legend=dict(
-#             x=0,
-#             y=1,
-#             traceorder='normal',
-#             bgcolor='rgba(0,0,0,0)'),
-#     )
-# }
 
-
-
+# User input checks
 @app.callback(Output('message_S1', 'children'),
               [Input('S1', 'value')])
 def check_input_S1(S1):
@@ -256,7 +217,6 @@ def check_input_S1(S1):
         return f'Cannot be lower than 0.'
     else:
         return ""
-
 
 
 @app.callback(Output('message_S2', 'children'),
@@ -267,11 +227,36 @@ def check_input_S2(S2):
     else:
         return ""
 
+
+@app.callback(Output('message_dt', 'children'),
+              [Input('T', 'value'),
+              Input("dt", "value")])
+def check_input_dt(T, dt):
+    if dt<0.001:
+        return f'Lower than 0.001 will be very slow.'
+    elif dt > T:
+        return f"Cannot be higher than {T}"
+    else:
+        return ""   
+
+
+@app.callback(Output('message_dt_p', 'children'),
+              [Input('T', 'value'),
+              Input("dt", "value"),
+              Input("dt_p","value")])
+def check_input_dt_p(T, dt, dt_p):
+    if dt_p<=0 or dt_p==None:
+        return f'Cannot be lower than 1.'
+    elif dt_p > (T/dt):
+        return f"Cannot be higher than {T/dt}"
+    else:
+        return ""   
+
+# Input visuals
 @app.callback(Output('correlation', 'children'),
               [Input('corr', 'value')])
 def display_value_corr(value):
     return f': {value}'
-
 
 
 @app.callback(Output('drift1', 'children'),
@@ -303,7 +288,6 @@ def display_value_Rf(value):
     return f': {int(value*100)}%'
 
 
-
 @app.callback(Output('matu', 'children'),
               [Input('T', 'value')])
 def display_value_T(value):
@@ -314,38 +298,12 @@ def display_value_T(value):
     else:
         return f': {value} years'       
 
-
-@app.callback(Output('message_dt', 'children'),
-              [Input('T', 'value'),
-              Input("dt", "value")])
-def check_input_dt(T, dt):
-    if dt<0.001:
-        return f'Lower than 0.001 will be very slow.'
-    elif dt > T:
-        return f"Cannot be higher than {T}"
-    else:
-        return ""   
-
-
-@app.callback(Output('message_dt_p', 'children'),
-              [Input('T', 'value'),
-              Input("dt", "value"),
-              Input("dt_p","value")])
-def check_input_dt_p(T, dt, dt_p):
-    if dt_p<=0 or dt_p==None:
-        return f'Cannot be lower than 1.'
-    elif dt_p > (T/dt):
-        return f"Cannot be higher than {T/dt}"
-    else:
-        return ""   
-
                 
 @app.callback(Output('TransactionCosts', 'value'),
               [Input('FixedOrPropor', 'value')])
 def display_value_TC(value):
     if value=="NTC":
         return 0
-
 
 @app.callback(Output('unit_TC', 'children'),
               [Input('FixedOrPropor', 'value')])
@@ -357,6 +315,7 @@ def display_unit_TC(value):
     else:
         return ""
 
+# Excel export
 @app.callback(Output('download-link', 'href'), 
              [Input('memory-output', 'data')])
 def update_download_link(data):
@@ -372,7 +331,7 @@ def update_download_link(data):
     return csv_string
 
 
-
+# Opening/Closing "About" Top-right button
 @app.callback(
     Output("popover", "is_open"),
     [Input("popover-target", "n_clicks")],
@@ -384,6 +343,6 @@ def toggle_popover(n, is_open):
     return is_open
 
 
-
+# Main function, runs the app
 if __name__ == '__main__':
     app.run_server(debug=True)

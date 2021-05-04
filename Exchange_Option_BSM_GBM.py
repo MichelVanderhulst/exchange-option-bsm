@@ -20,7 +20,7 @@ def p_eo(S1, S2, T, t, vol):
     dd2 = d2(dd1, T,t,vol)
     return S1*norm.cdf(dd1)-S2*norm.cdf(dd2)
 
-def RepStrat_Exchange_Option_BSM(S1, S2, Rf, T, mu1, mu2, vol1, vol2, corr, dt, RebalancingSteps, TransactionCosts, FixedOrPropor, seed):
+def RepStrat_Exchange_Option_BSM_GBM(S1, S2, Rf, T, mu1, mu2, vol1, vol2, corr, dt, RebalancingSteps, TransactionCosts, FixedOrPropor, seed):
 
 	# Problematic input from webapp, returns nothing
     arguments = [S1, S2, Rf, T, mu1, mu2, vol1, vol2, corr, dt, RebalancingSteps, FixedOrPropor] #transaction costs skipped bc assumed 0
