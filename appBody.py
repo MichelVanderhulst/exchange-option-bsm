@@ -234,12 +234,20 @@ def body():
                                          labelStyle={'padding':5, 'font-weight': 'bold', 'display': 'inline-block'}
                                         ),  
                           #
-                          html.Label(children=[dcc.Checklist(id = "seed",
-                                                   options=[{'label': 'New Brownian motion', 'value': "seed"}],
-                                                   value=[], 
-                                                   labelStyle={'font-weight': 'bold', "text-align":"left", 'display': 'inline-block'}
-                                                   )], 
+                          html.Label(children=[dbc.Button("Change stock trajectory", id="ButtonChangeStockTrajectory", color="primary", className="mr-1",)],
                                      title=list_input["Seed"]),
+                          html.Div(children=[html.Label("The current stock trajectory scenario is: ", style={'display': 'inline-block', "padding":5}),
+                                             dcc.Input(id='seed', readOnly=False, debounce=True, value='1', min=1,max=500000, type='number',  style={"width":"20%", 'display': 'inline-block'})
+                                             ]      #stockScenario
+                                  ),                          
+
+                          # html.Label(children=[dcc.Checklist(id = "seed",
+                          #                          options=[{'label': 'New Brownian motion', 'value': "seed"}],
+                          #                          value=[], 
+                          #                          labelStyle={'font-weight': 'bold', "text-align":"left", 'display': 'inline-block'}
+                          #                          )], 
+                          #            title=list_input["Seed"]),
+                          #
                           #
                           html.Br(),
                           html.A('Download Data', id='download-link', download="rawdata.csv", href="", target="_blank"),

@@ -51,17 +51,31 @@ app.layout = html.Div(
      Input("dt_p", "value"),
      Input("TransactionCosts", "value"),
      Input("FixedOrPropor", "value"),
-     Input("seed", "value")])
-def get_rep_strat_data(S1, S2, Rf,T,mu1,vol1,mu2, vol2, corr, dt,dt_p, TransactionCosts, FixedOrPropor, seed):
-    StockPrice1, StockPrice2, dt, a, OptionIntrinsicValue, OptionPrice, EquityAccount, EquityAccount1, EquityAccount2,CashAccount, Portfolio, t, Delta1, Delta2, cash_bfr, cash_aft, equi1_bfr, equi1_aft, equi2_bfr, equi2_aft = RepStrat_Exchange_Option_BSM_GBM(S1, S2, Rf, T, mu1, mu2, vol1, vol2, corr, dt, dt_p, TransactionCosts, FixedOrPropor, seed)
-    return StockPrice1, StockPrice2, dt, list(a), OptionIntrinsicValue, OptionPrice, EquityAccount, EquityAccount1, EquityAccount2,CashAccount, Portfolio, t, Delta1, Delta2, cash_bfr, cash_aft, equi1_bfr, equi1_aft, equi2_bfr, equi2_aft
+     Input("seed", "value"),
+     Input('ButtonChangeStockTrajectory', 'n_clicks'),])
+def get_rep_strat_data(S1, S2, Rf,T,mu1,vol1,mu2, vol2, corr, dt,dt_p, TransactionCosts, FixedOrPropor, seed, n_clicks):
+    changed_id = [p['prop_id'] for p in dash.callback_context.triggered][0]
+    if 'ButtonChangeStockTrajectory' in changed_id:
+        seed=["RandomSeed"]
+    else:
+        seed = seed if type(seed)==int else 1
+
+    StockPrice1, StockPrice2, dt, a, OptionIntrinsicValue, OptionPrice, EquityAccount, EquityAccount1, EquityAccount2,CashAccount, Portfolio, t, Delta1, Delta2, cash_bfr, cash_aft, equi1_bfr, equi1_aft, equi2_bfr, equi2_aft, seed = RepStrat_Exchange_Option_BSM_GBM(S1, S2, Rf, T, mu1, mu2, vol1, vol2, corr, dt, dt_p, TransactionCosts, FixedOrPropor, seed)
+    return StockPrice1, StockPrice2, dt, list(a), OptionIntrinsicValue, OptionPrice, EquityAccount, EquityAccount1, EquityAccount2,CashAccount, Portfolio, t, Delta1, Delta2, cash_bfr, cash_aft, equi1_bfr, equi1_aft, equi2_bfr, equi2_aft, seed
+
+@app.callback(Output('seed', 'value'),
+              [Input('memory-output', 'data')])
+def display_value_mu(data):
+    StockPrice1, StockPrice2, dt, discre_matu, OptionIntrinsicValue, OptionPrice, EquityAccount, EquityAccount1, EquityAccount2,CashAccount, Portfolio, t, Delta1, Delta2, cash_bfr, cash_aft, equi1_bfr, equi1_aft, equi2_bfr, equi2_aft, seed = data
+    return seed
+
 
 # Plot of stock simulation, intrinsic value, option price and rep portfolio
 @app.callback(
     Output('replication', 'figure'),
     [Input('memory-output', 'data'),])
 def graph_rep_strat(data):
-    StockPrice1, StockPrice2, dt, discre_matu, OptionIntrinsicValue, OptionPrice, EquityAccount, EquityAccount1, EquityAccount2,CashAccount, Portfolio, t, Delta1, Delta2, cash_bfr, cash_aft, equi1_bfr, equi1_aft, equi2_bfr, equi2_aft= data
+    StockPrice1, StockPrice2, dt, discre_matu, OptionIntrinsicValue, OptionPrice, EquityAccount, EquityAccount1, EquityAccount2,CashAccount, Portfolio, t, Delta1, Delta2, cash_bfr, cash_aft, equi1_bfr, equi1_aft, equi2_bfr, equi2_aft, seed = data
 
     return{
     'data': [
@@ -126,7 +140,7 @@ def graph_rep_strat(data):
     Output('port_details', 'figure'),
     [Input('memory-output', 'data'),])
 def graph_portf_details(data):
-    StockPrice1, StockPrice2, dt, discre_matu, OptionIntrinsicValue, OptionPrice, EquityAccount, EquityAccount1, EquityAccount2,CashAccount, Portfolio, t, Delta1, Delta2, cash_bfr, cash_aft, equi1_bfr, equi1_aft, equi2_bfr, equi2_aft= data
+    StockPrice1, StockPrice2, dt, discre_matu, OptionIntrinsicValue, OptionPrice, EquityAccount, EquityAccount1, EquityAccount2,CashAccount, Portfolio, t, Delta1, Delta2, cash_bfr, cash_aft, equi1_bfr, equi1_aft, equi2_bfr, equi2_aft, seed= data
     return{
     'data': [
         go.Scatter(
@@ -176,7 +190,7 @@ def graph_portf_details(data):
     Output('held_shares', 'figure'),
     [Input('memory-output', 'data'),])
 def graph_held_shares(data):
-    StockPrice1, StockPrice2, dt, discre_matu, OptionIntrinsicValue, OptionPrice, EquityAccount, EquityAccount1, EquityAccount2,CashAccount, Portfolio, t, Delta1, Delta2, cash_bfr, cash_aft, equi1_bfr, equi1_aft, equi2_bfr, equi2_aft = data
+    StockPrice1, StockPrice2, dt, discre_matu, OptionIntrinsicValue, OptionPrice, EquityAccount, EquityAccount1, EquityAccount2,CashAccount, Portfolio, t, Delta1, Delta2, cash_bfr, cash_aft, equi1_bfr, equi1_aft, equi2_bfr, equi2_aft, seed = data
     return{
     'data': [
         go.Scatter(
@@ -319,7 +333,7 @@ def display_unit_TC(value):
 @app.callback(Output('download-link', 'href'), 
              [Input('memory-output', 'data')])
 def update_download_link(data):
-    StockPrice1, StockPrice2, dt, discre_matu, OptionIntrinsicValue, OptionPrice, EquityAccount, EquityAccount1, EquityAccount2,CashAccount, Portfolio, t, Delta1, Delta2, cash_bfr, cash_aft, equi1_bfr, equi1_aft, equi2_bfr, equi2_aft = data
+    StockPrice1, StockPrice2, dt, discre_matu, OptionIntrinsicValue, OptionPrice, EquityAccount, EquityAccount1, EquityAccount2,CashAccount, Portfolio, t, Delta1, Delta2, cash_bfr, cash_aft, equi1_bfr, equi1_aft, equi2_bfr, equi2_aft, seed = data
     cash_bfr, cash_aft, equi1_bfr, equi1_aft, t, equi2_bfr, equi2_aft = np.array(cash_bfr), np.array(cash_aft), np.array(equi1_bfr), np.array(equi1_aft), np.array(t), np.array(equi2_bfr), np.array(equi2_aft)
 
     df = pd.DataFrame({"Time (in dt)":t,"Stock price 1":StockPrice1, "Stock price 2":StockPrice2, "Option intrinsic value":OptionIntrinsicValue, "Option price":OptionPrice,

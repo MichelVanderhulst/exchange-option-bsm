@@ -40,5 +40,5 @@ list_input = {"-": "-",
                                    "considering them will decrease the quality of the replication strategy. If left empty, it is assumed null.",
               "Correlation": "Correlation between both stocks, i.e. how much they move together.",
               "Seed": "The simulations are based on a random number generation. Currently, the generation is fixed, ie the Brownian motion behind"
-                     " the stock random dynamics is fixed, and permits sensitivity analysis. Checking this will generate a new Brownian motion every time you change an input."
+                     " the stock random dynamics is fixed, therefore allowing for sensitivity analysis. Checking this will generate a new Brownian motion every time you change an input."
               }

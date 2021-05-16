@@ -53,10 +53,20 @@ def RepStrat_Exchange_Option_BSM_GBM(S1, S2, Rf, T, mu1, mu2, vol1, vol2, corr, 
         TransactionCosts = TransactionCosts / 100
 
     # Seed is always fixed. 
-    np.random.seed(1)
-    # unless user wants new seed everytime
-    if seed == ["seed"]:
-        np.random.seed(np.random.randint(low=2, high=50000))
+    b = seed
+    if type(b) is list:
+        b=b[0]
+    else:
+        np.random.seed(b)
+
+    # unless user wants new seed
+    if seed == ["RandomSeed"]:
+        np.random.seed(None)
+        b = np.random.randint(low=1, high=500000)
+        np.random.seed(b)
+        # np.random.seed(np.random.randint(low=2, high=500000))
+
+    
     
     # volatility whilst considering correlation
     volcarre = (vol1**2)+(vol2**2) -2*corr*vol1*vol2
@@ -175,6 +185,6 @@ def RepStrat_Exchange_Option_BSM_GBM(S1, S2, Rf, T, mu1, mu2, vol1, vol2, corr, 
     #####################                  END replication strategy                                #####################
     ####################################################################################################################
     
-    return StockPrice1, StockPrice2, dt, a, OptionIntrinsicValue, OptionPrice, EquityAccount, EquityAccount1, EquityAccount2,CashAccount, EquityAccount+CashAccount, t, Delta1, Delta2, cash_bfr, cash_aft, equi1_bfr, equi1_aft, equi2_bfr, equi2_aft
+    return StockPrice1, StockPrice2, dt, a, OptionIntrinsicValue, OptionPrice, EquityAccount, EquityAccount1, EquityAccount2,CashAccount, EquityAccount+CashAccount, t, Delta1, Delta2, cash_bfr, cash_aft, equi1_bfr, equi1_aft, equi2_bfr, equi2_aft, b
 #                        #   (S1,  S2,  Rf,T, mu1, mu2, vol1, vol2, corr, dt,   RebalancingSteps, TransactionCosts, Fixed, Propor)
 # RepStrat_Exchange_Option_BSM(100, 100, 5, 5.2, 5,   5,   10,   5,    0.2,  0.01, 1, 0, 0, 0)
