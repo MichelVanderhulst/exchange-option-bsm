@@ -221,7 +221,7 @@ def body():
                                     ]),
                             #
                           html.Div([html.Label('Transaction costs', title=list_input["Transaction costs"], style={'font-weight': 'bold', "text-align":"left",'width': '50%', 'display': 'inline-block'}),
-                                    dcc.Input(id="TransactionCosts", value=0.5, debounce=True, type='number', style={"width":"16%", 'display': 'inline-block'}),
+                                    dcc.Input(id="TransactionCosts", value=0, debounce=True, type='number', style={"width":"16%", 'display': 'inline-block'}),
                                     html.Label(id="unit_TC", style={"padding":5, "display":"inline-block"})
                               ]),
                           #
@@ -230,7 +230,7 @@ def body():
                                                   {'label': 'Fixed TC', 'value': 'FTC'},
                                                   {'label': 'Proportional TC', 'value': 'PTC'}
                                                  ],
-                                         value='FTC',
+                                         value='NTC',
                                          labelStyle={'padding':5, 'font-weight': 'bold', 'display': 'inline-block'}
                                         ),  
                           #
