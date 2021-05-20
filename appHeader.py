@@ -30,7 +30,7 @@ def header():
                                               ),
 
                                        html.Div(children=[html.H5("Exchange option replication strategy app"),
-                                                          html.H6("Cox-Ross-Rubinstein model")
+                                                          html.H6("Black-Scholes-Merton model")
                                                           ],
                                                  style={"display":"inline-block", "font-family":'sans-serif','transform':'translateY(+32%)', "margin-left":"10px"}),
 
