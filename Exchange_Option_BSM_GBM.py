@@ -144,22 +144,22 @@ def RepStrat_Exchange_Option_BSM_GBM(S1, S2, Rf, T, mu1, mu2, vol1, vol2, corr, 
         OptionIntrinsicValue[i] = max(0, StockPrice1[i] - StockPrice2[i])
         OptionPrice[i] = p_eo(StockPrice1[i], StockPrice2[i], T, t[i], vol)
 
+        # Before rebalancing
+        ### accrued interest on cash account & updating both equity account to stock prices evolution
+        CashAccount[i] = CashAccount[i-1] * (1 + Rf * dt)
+
+        EquityAccount1[i] = Delta1[i-1] * StockPrice1[i]
+        EquityAccount2[i] = Delta2[i-1] * StockPrice2[i]
+        EquityAccount[i] = EquityAccount1[i] + EquityAccount2[i]
+
+        cash_bfr[i], equi1_bfr[i], equi2_bfr[i] = CashAccount[i], EquityAccount1[i], EquityAccount2[i]
+        
         # Replication strategy
         ### i = rebalancing step
         ### Portfolio is rebalanced every Rebalancing Step, so in order to recognize them we take the modulus of i, the
         ### discretization step, and if it is equal to zero then i is an rebalancing step:
         if i % RebalancingSteps == 0:
-        	# Before rebalancing
-        	### accrued interest on cash account & updating both equity account to stock prices evolution
-            CashAccount[i] = CashAccount[i-1] * (1 + Rf * dt_rebal)
-
-            EquityAccount1[i] = Delta1[i-1] * StockPrice1[i]
-            EquityAccount2[i] = Delta2[i-1]*StockPrice2[i]
-            EquityAccount[i] = EquityAccount1[i]+EquityAccount2[i]
-
-            cash_bfr[i], equi1_bfr[i], equi2_bfr[i] = CashAccount[i], EquityAccount1[i], EquityAccount2[i]
-
-            # After reblancing
+            # Rebalancing
             ### computing delta (# of shares to hold at this time t), ensuring equivalence of portfolio and selling/buying
             ### shares to get delta and updating EquityAccount value with current Delta
             dd1 = d1(StockPrice1[i], StockPrice2[i], T, t_rebal[int(i/RebalancingSteps)], vol)
@@ -170,21 +170,13 @@ def RepStrat_Exchange_Option_BSM_GBM(S1, S2, Rf, T, mu1, mu2, vol1, vol2, corr, 
             EquityAccount[i] = EquityAccount1[i] + EquityAccount2[i]
             CashAccount[i] = CashAccount[i] + EquityAccount[i] - Delta1[i]*StockPrice1[i] - Delta2[i]*StockPrice2[i] - abs(Delta1[i]-Delta1[i-1]) * (Fixed*TransactionCosts + StockPrice1[0]*Propor*TransactionCosts) - abs(Delta2[i]-Delta2[i-1]) * (Fixed*TransactionCosts+StockPrice2[0]*Propor*TransactionCosts)
 
-            cash_aft[i], equi1_aft[i], equi2_aft[i] = CashAccount[i], EquityAccount1[i], EquityAccount2[i]
-
         # i is not a rebalancing step, portfolio is not rebalanced and thus takes its previous value
         else:
             Delta1[i] = Delta1[i - 1]
             Delta2[i] = Delta2[i-1]
-            CashAccount[i] = CashAccount[i - 1]
-            EquityAccount1[i] = EquityAccount1[i-1]
-            EquityAccount2[i] = EquityAccount2[i-1]
-            EquityAccount[i] = EquityAccount[i - 1]
-            cash_bfr[i], cash_aft[i], equi1_bfr[i], equi1_aft[i], equi2_bfr[i], equi2_aft[i] = cash_bfr[i-1], cash_aft[i-1], equi1_bfr[i-1], equi1_aft[i-1], equi2_bfr[i-1], equi2_aft[i-1]
-
+        
+        cash_aft[i], equi1_aft[i], equi2_aft[i] = CashAccount[i], EquityAccount1[i], EquityAccount2[i]
     #####################                  END replication strategy                                #####################
     ####################################################################################################################
     
     return StockPrice1, StockPrice2, dt, a, OptionIntrinsicValue, OptionPrice, EquityAccount, EquityAccount1, EquityAccount2,CashAccount, EquityAccount+CashAccount, t, Delta1, Delta2, cash_bfr, cash_aft, equi1_bfr, equi1_aft, equi2_bfr, equi2_aft, b
-#                        #   (S1,  S2,  Rf,T, mu1, mu2, vol1, vol2, corr, dt,   RebalancingSteps, TransactionCosts, Fixed, Propor)
-# RepStrat_Exchange_Option_BSM(100, 100, 5, 5.2, 5,   5,   10,   5,    0.2,  0.01, 1, 0, 0, 0)
